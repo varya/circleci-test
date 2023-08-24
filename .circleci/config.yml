@@ -2,11 +2,22 @@ version: 2.1
 .directory: &directory
   working_directory: ~/repo
 jobs:
-  test:
-  <<: *directory
-  docker:
-    - image: cimg/android:2023.08.1-node
+  build-storybook:
+    <<: *directory
+    docker:
+      - image: cimg/android:2023.08.1-node
     steps:
+      - attach_workspace:
+          at: ~/
       - run:
-          name: 'node version'
-          command: 'node -v'
+          name: Test node
+          command: node -v
+workflows:
+  version: 2.1
+  ahua-design-system-stage:
+    jobs:
+      - build-storybook:
+          filters:
+            branches:
+              only:
+                - main
